@@ -616,6 +616,27 @@ class AppStoreConnectServer {
         }
         return baseTools;
     }
+    formatToolResponse(result, error) {
+        if (error) {
+            return {
+                isError: true,
+                content: [
+                    {
+                        type: "text",
+                        text: `Error: ${error.message}`
+                    }
+                ]
+            };
+        }
+        return {
+            content: [
+                {
+                    type: "text",
+                    text: typeof result === 'string' ? result : JSON.stringify(result)
+                }
+            ]
+        };
+    }
     setupHandlers() {
         // List available tools
         this.server.setRequestHandler(ListToolsRequestSchema, async () => ({
@@ -628,57 +649,177 @@ class AppStoreConnectServer {
                 switch (request.params.name) {
                     // App Management
                     case "list_apps":
-                        return { toolResult: await this.appHandlers.listApps(args) };
+                        try {
+                            const result = await this.appHandlers.listApps(args);
+                            return this.formatToolResponse(result);
+                        }
+                        catch (error) {
+                            return this.formatToolResponse(null, error);
+                        }
                     case "get_app_info":
-                        return { toolResult: await this.appHandlers.getAppInfo(args) };
+                        try {
+                            const result = await this.appHandlers.getAppInfo(args);
+                            return this.formatToolResponse(result);
+                        }
+                        catch (error) {
+                            return this.formatToolResponse(null, error);
+                        }
                     // Beta Testing
                     case "list_beta_groups":
-                        return { toolResult: await this.betaHandlers.listBetaGroups(args) };
+                        try {
+                            const result = await this.betaHandlers.listBetaGroups(args);
+                            return this.formatToolResponse(result);
+                        }
+                        catch (error) {
+                            return this.formatToolResponse(null, error);
+                        }
                     case "list_group_testers":
-                        return { toolResult: await this.betaHandlers.listGroupTesters(args) };
+                        try {
+                            const result = await this.betaHandlers.listGroupTesters(args);
+                            return this.formatToolResponse(result);
+                        }
+                        catch (error) {
+                            return this.formatToolResponse(null, error);
+                        }
                     case "add_tester_to_group":
-                        return { toolResult: await this.betaHandlers.addTesterToGroup(args) };
+                        try {
+                            const result = await this.betaHandlers.addTesterToGroup(args);
+                            return this.formatToolResponse(result);
+                        }
+                        catch (error) {
+                            return this.formatToolResponse(null, error);
+                        }
                     case "remove_tester_from_group":
-                        return { toolResult: await this.betaHandlers.removeTesterFromGroup(args) };
+                        try {
+                            const result = await this.betaHandlers.removeTesterFromGroup(args);
+                            return this.formatToolResponse(result);
+                        }
+                        catch (error) {
+                            return this.formatToolResponse(null, error);
+                        }
                     // Bundle IDs
                     case "create_bundle_id":
-                        return { toolResult: await this.bundleHandlers.createBundleId(args) };
+                        try {
+                            const result = await this.bundleHandlers.createBundleId(args);
+                            return this.formatToolResponse(result);
+                        }
+                        catch (error) {
+                            return this.formatToolResponse(null, error);
+                        }
                     case "list_bundle_ids":
-                        return { toolResult: await this.bundleHandlers.listBundleIds(args) };
+                        try {
+                            const result = await this.bundleHandlers.listBundleIds(args);
+                            return this.formatToolResponse(result);
+                        }
+                        catch (error) {
+                            return this.formatToolResponse(null, error);
+                        }
                     case "get_bundle_id_info":
-                        return { toolResult: await this.bundleHandlers.getBundleIdInfo(args) };
+                        try {
+                            const result = await this.bundleHandlers.getBundleIdInfo(args);
+                            return this.formatToolResponse(result);
+                        }
+                        catch (error) {
+                            return this.formatToolResponse(null, error);
+                        }
                     case "enable_bundle_capability":
-                        return { toolResult: await this.bundleHandlers.enableBundleCapability(args) };
+                        try {
+                            const result = await this.bundleHandlers.enableBundleCapability(args);
+                            return this.formatToolResponse(result);
+                        }
+                        catch (error) {
+                            return this.formatToolResponse(null, error);
+                        }
                     case "disable_bundle_capability":
-                        return { toolResult: await this.bundleHandlers.disableBundleCapability(args) };
+                        try {
+                            const result = await this.bundleHandlers.disableBundleCapability(args);
+                            return this.formatToolResponse(result);
+                        }
+                        catch (error) {
+                            return this.formatToolResponse(null, error);
+                        }
                     // Devices
                     case "list_devices":
-                        return { toolResult: await this.deviceHandlers.listDevices(args) };
+                        try {
+                            const result = await this.deviceHandlers.listDevices(args);
+                            return this.formatToolResponse(result);
+                        }
+                        catch (error) {
+                            return this.formatToolResponse(null, error);
+                        }
                     // Users
                     case "list_users":
-                        return { toolResult: await this.userHandlers.listUsers(args) };
+                        try {
+                            const result = await this.userHandlers.listUsers(args);
+                            return this.formatToolResponse(result);
+                        }
+                        catch (error) {
+                            return this.formatToolResponse(null, error);
+                        }
                     // Analytics & Reports
                     case "create_analytics_report_request":
-                        return { toolResult: await this.analyticsHandlers.createAnalyticsReportRequest(args) };
+                        try {
+                            const result = await this.analyticsHandlers.createAnalyticsReportRequest(args);
+                            return this.formatToolResponse(result);
+                        }
+                        catch (error) {
+                            return this.formatToolResponse(null, error);
+                        }
                     case "list_analytics_reports":
-                        return { toolResult: await this.analyticsHandlers.listAnalyticsReports(args) };
+                        try {
+                            const result = await this.analyticsHandlers.listAnalyticsReports(args);
+                            return this.formatToolResponse(result);
+                        }
+                        catch (error) {
+                            return this.formatToolResponse(null, error);
+                        }
                     case "list_analytics_report_segments":
-                        return { toolResult: await this.analyticsHandlers.listAnalyticsReportSegments(args) };
+                        try {
+                            const result = await this.analyticsHandlers.listAnalyticsReportSegments(args);
+                            return this.formatToolResponse(result);
+                        }
+                        catch (error) {
+                            return this.formatToolResponse(null, error);
+                        }
                     case "download_analytics_report_segment":
-                        return { toolResult: await this.analyticsHandlers.downloadAnalyticsReportSegment(args) };
+                        try {
+                            const result = await this.analyticsHandlers.downloadAnalyticsReportSegment(args);
+                            return this.formatToolResponse(result);
+                        }
+                        catch (error) {
+                            return this.formatToolResponse(null, error);
+                        }
                     case "download_sales_report":
-                        if (!config.vendorNumber) {
-                            throw new McpError(ErrorCode.MethodNotFound, "Sales reports are not available. Please set APP_STORE_CONNECT_VENDOR_NUMBER environment variable.");
+                        try {
+                            if (!config.vendorNumber) {
+                                throw new McpError(ErrorCode.MethodNotFound, "Sales reports are not available. Please set APP_STORE_CONNECT_VENDOR_NUMBER environment variable.");
+                            }
+                            const result = await this.analyticsHandlers.downloadSalesReport(args);
+                            return this.formatToolResponse(result);
                         }
-                        return { toolResult: await this.analyticsHandlers.downloadSalesReport(args) };
+                        catch (error) {
+                            return this.formatToolResponse(null, error);
+                        }
                     case "download_finance_report":
-                        if (!config.vendorNumber) {
-                            throw new McpError(ErrorCode.MethodNotFound, "Finance reports are not available. Please set APP_STORE_CONNECT_VENDOR_NUMBER environment variable.");
+                        try {
+                            if (!config.vendorNumber) {
+                                throw new McpError(ErrorCode.MethodNotFound, "Finance reports are not available. Please set APP_STORE_CONNECT_VENDOR_NUMBER environment variable.");
+                            }
+                            const result = await this.analyticsHandlers.downloadFinanceReport(args);
+                            return this.formatToolResponse(result);
                         }
-                        return { toolResult: await this.analyticsHandlers.downloadFinanceReport(args) };
+                        catch (error) {
+                            return this.formatToolResponse(null, error);
+                        }
                     // Xcode Development Tools
                     case "list_schemes":
-                        return { toolResult: await this.xcodeHandlers.listSchemes(args) };
+                        try {
+                            const result = await this.xcodeHandlers.listSchemes(args);
+                            return this.formatToolResponse(result);
+                        }
+                        catch (error) {
+                            return this.formatToolResponse(null, error);
+                        }
                     default:
                         throw new McpError(ErrorCode.MethodNotFound, `Unknown tool: ${request.params.name}`);
                 }
