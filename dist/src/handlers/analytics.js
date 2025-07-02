@@ -54,6 +54,17 @@ export class AnalyticsHandlers {
             throw new Error('Vendor number is required. Please provide it as an argument or set APP_STORE_CONNECT_VENDOR_NUMBER environment variable.');
         }
         validateRequired({ reportDate }, ['reportDate']);
+        // Validate date format and ensure it's not in the future
+        const datePattern = /^\d{4}-\d{2}$/;
+        if (!datePattern.test(reportDate)) {
+            throw new Error('Report date must be in YYYY-MM format (e.g., 2024-01)');
+        }
+        const [year, month] = reportDate.split('-').map(Number);
+        const reportDateObj = new Date(year, month - 1);
+        const currentDate = new Date();
+        if (reportDateObj > currentDate) {
+            throw new Error(`Cannot request sales report for future date: ${reportDate}. Sales reports are only available for past months.`);
+        }
         const filters = {
             reportDate,
             reportType,
@@ -69,6 +80,17 @@ export class AnalyticsHandlers {
             throw new Error('Vendor number is required. Please provide it as an argument or set APP_STORE_CONNECT_VENDOR_NUMBER environment variable.');
         }
         validateRequired({ reportDate, regionCode }, ['reportDate', 'regionCode']);
+        // Validate date format and ensure it's not in the future
+        const datePattern = /^\d{4}-\d{2}$/;
+        if (!datePattern.test(reportDate)) {
+            throw new Error('Report date must be in YYYY-MM format (e.g., 2024-01)');
+        }
+        const [year, month] = reportDate.split('-').map(Number);
+        const reportDateObj = new Date(year, month - 1);
+        const currentDate = new Date();
+        if (reportDateObj > currentDate) {
+            throw new Error(`Cannot request finance report for future date: ${reportDate}. Finance reports are only available for past months.`);
+        }
         const filters = {
             reportDate,
             regionCode,

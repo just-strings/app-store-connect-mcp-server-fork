@@ -618,12 +618,42 @@ class AppStoreConnectServer {
     }
     formatToolResponse(result, error) {
         if (error) {
+            let errorMessage = error.message;
+            // Check if it's an axios error with specific status codes
+            if (axios.isAxiosError(error)) {
+                const status = error.response?.status;
+                const apiError = error.response?.data?.errors?.[0];
+                if (status === 404) {
+                    // Provide more specific messages for 404 errors
+                    if (error.config?.url?.includes('/salesReports')) {
+                        errorMessage = 'Sales report not found. This typically happens when:\n' +
+                            '- The requested date is in the future\n' +
+                            '- No sales data exists for the requested period\n' +
+                            '- The report hasn\'t been generated yet (reports are usually available 1-2 days after the period ends)';
+                    }
+                    else if (error.config?.url?.includes('/financeReports')) {
+                        errorMessage = 'Finance report not found. This typically happens when:\n' +
+                            '- The requested date is in the future\n' +
+                            '- No financial data exists for the requested period\n' +
+                            '- The report hasn\'t been generated yet (finance reports are usually available after the 5th of the following month)';
+                    }
+                    else {
+                        errorMessage = apiError?.detail || `Resource not found (404): ${error.config?.url}`;
+                    }
+                }
+                else if (apiError) {
+                    errorMessage = `App Store Connect API error: ${apiError.detail || apiError.title || error.message}`;
+                }
+                else {
+                    errorMessage = `Request failed with status ${status}: ${error.message}`;
+                }
+            }
             return {
                 isError: true,
                 content: [
                     {
                         type: "text",
-                        text: `Error: ${error.message}`
+                        text: errorMessage
                     }
                 ]
             };
