@@ -672,6 +672,17 @@ class AppStoreConnectServer {
           } else {
             errorMessage = apiError?.detail || `Resource not found (404): ${error.config?.url}`;
           }
+        } else if (status === 400) {
+          // Provide more specific messages for 400 errors
+          if (error.config?.url?.includes('/apps/') && error.config?.params?.include) {
+            errorMessage = 'Bad request: Invalid relationship includes. ' +
+              'Common issues:\n' +
+              '- Using "customerReviews" instead of "reviewSubmissions"\n' +
+              '- Using "perfPowerMetrics" which is not a valid relationship\n' +
+              '- Check that all include values match the API documentation exactly';
+          } else {
+            errorMessage = apiError?.detail || 'Bad request: The request parameters are invalid. Check that all values match the API requirements.';
+          }
         } else if (apiError) {
           errorMessage = `App Store Connect API error: ${apiError.detail || apiError.title || error.message}`;
         } else {
