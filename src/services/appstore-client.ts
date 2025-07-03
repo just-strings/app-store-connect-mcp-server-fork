@@ -72,9 +72,11 @@ export class AppStoreConnectClient {
     console.error(`Parameters:`, params);
     
     try {
-      // Use a separate axios call with binary response type
-      const response = await axios.get(url, {
-        baseURL: 'https://api.appstoreconnect.apple.com/v1',
+      // IMPORTANT: Use this.axiosInstance instead of axios directly
+      // to ensure we use the configured instance
+      const fullUrl = url.startsWith('/') ? url : `/${url}`;
+      
+      const response = await this.axiosInstance.get(fullUrl, {
         params,
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -95,13 +97,21 @@ export class AppStoreConnectClient {
       
       if (isGzipped) {
         console.error(`First 10 bytes of buffer:`, buffer.slice(0, 10));
-        const decompressed = gunzipSync(buffer);
-        const csvData = decompressed.toString('utf-8');
-        
-        console.error(`Decompressed report: ${csvData.length} characters`);
-        console.error(`First 100 chars of CSV:`, csvData.substring(0, 100));
-        
-        return { data: csvData };
+        try {
+          const decompressed = gunzipSync(buffer);
+          const csvData = decompressed.toString('utf-8');
+          
+          console.error(`Decompressed report: ${csvData.length} characters`);
+          console.error(`First 100 chars of CSV:`, csvData.substring(0, 100));
+          
+          return { data: csvData };
+        } catch (decompressError) {
+          console.error('Decompression failed:', decompressError);
+          // Return the raw buffer as base64 to avoid corruption
+          const base64Data = buffer.toString('base64');
+          console.error('Returning base64 encoded data due to decompression failure');
+          return { data: `GZIP_ERROR:${base64Data}` };
+        }
       }
       
       // If not gzipped, just convert to string
@@ -113,12 +123,17 @@ export class AppStoreConnectClient {
       return { data: textData };
       
     } catch (error) {
-      console.error('Error downloading report:', error);
+      console.error('Error in downloadReport:', error);
       if (axios.isAxiosError(error)) {
         console.error('Axios error details:', {
           status: error.response?.status,
           statusText: error.response?.statusText,
-          data: error.response?.data
+          data: error.response?.data,
+          config: {
+            url: error.config?.url,
+            baseURL: error.config?.baseURL,
+            responseType: error.config?.responseType
+          }
         });
       }
       throw error;
