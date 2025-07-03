@@ -133,16 +133,7 @@ export class AnalyticsHandlers {
       vendorNumber
     };
 
-    const result = await this.client.get<SalesReportResponse>('/salesReports', buildFilterParams(filters));
-    
-    // Log to verify we're getting clean CSV data
-    if (result && result.data) {
-      console.error('Sales report data length:', result.data.length);
-      console.error('Sales report data type:', typeof result.data);
-      console.error('First 100 chars of sales report:', result.data.substring(0, 100));
-    }
-    
-    return result;
+    return this.client.get<SalesReportResponse>('/salesReports', buildFilterParams(filters));
   }
 
   async downloadFinanceReport(args: {
