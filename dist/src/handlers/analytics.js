@@ -72,7 +72,10 @@ export class AnalyticsHandlers {
             frequency,
             vendorNumber
         };
-        return this.client.get('/salesReports', buildFilterParams(filters));
+        console.error('downloadSalesReport: Calling downloadReport with filters:', buildFilterParams(filters));
+        const result = await this.client.downloadReport('/salesReports', buildFilterParams(filters));
+        console.error('downloadSalesReport: Result received, data length:', result?.data?.length);
+        return result;
     }
     async downloadFinanceReport(args) {
         const { vendorNumber = this.config?.vendorNumber, reportDate, regionCode } = args;
@@ -96,6 +99,6 @@ export class AnalyticsHandlers {
             regionCode,
             vendorNumber
         };
-        return this.client.get('/financeReports', buildFilterParams(filters));
+        return this.client.downloadReport('/financeReports', buildFilterParams(filters));
     }
 }

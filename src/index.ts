@@ -701,6 +701,19 @@ class AppStoreConnectServer {
       };
     }
     
+    // Special handling for sales/finance reports that return data property with CSV content
+    if (result && typeof result === 'object' && 'data' in result && typeof result.data === 'string') {
+      // For reports, return the CSV data directly
+      return {
+        content: [
+          {
+            type: "text",
+            text: result.data
+          }
+        ]
+      };
+    }
+    
     return {
       content: [
         {

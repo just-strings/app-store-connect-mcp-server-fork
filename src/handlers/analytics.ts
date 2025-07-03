@@ -133,7 +133,10 @@ export class AnalyticsHandlers {
       vendorNumber
     };
 
-    return this.client.get<SalesReportResponse>('/salesReports', buildFilterParams(filters));
+    console.error('downloadSalesReport: Calling downloadReport with filters:', buildFilterParams(filters));
+    const result = await this.client.downloadReport('/salesReports', buildFilterParams(filters));
+    console.error('downloadSalesReport: Result received, data length:', result?.data?.length);
+    return result;
   }
 
   async downloadFinanceReport(args: {
@@ -169,6 +172,6 @@ export class AnalyticsHandlers {
       vendorNumber
     };
 
-    return this.client.get<FinanceReportResponse>('/financeReports', buildFilterParams(filters));
+    return this.client.downloadReport('/financeReports', buildFilterParams(filters));
   }
 }
